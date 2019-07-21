@@ -1,6 +1,6 @@
 
 const expect = require('chai').expect;
-const yp = require('..');
+const yp = require('../src/tag.js');
 
 
 describe('transformStartTag()', function () {
@@ -14,7 +14,7 @@ describe('transformStartTag()', function () {
       selfClosing: false
     };
     const expected = {
-      yagniDom: 'h',
+      yagniDom: ['h'],
       line: 'h("div", {"class": "sidebar"}, {}, ['
     };
 
@@ -31,7 +31,7 @@ describe('transformStartTag()', function () {
       selfClosing: true
     };
     const expected = {
-      yagniDom: 'h',
+      yagniDom: ['h'],
       line: 'h("div", {"class": "sidebar"}, {}, [])'
     };
 
@@ -48,8 +48,46 @@ describe('transformStartTag()', function () {
       selfClosing: false
     };
     const expected = {
-      yagniDom: 'h',
+      yagniDom: ['h'],
       line: 'h("input", {"class": "block", "name": "username"}, {}, [])'
+    };
+
+    expect(yp.transformStartTag(inp)).to.deep.equal(expected);
+
+  });
+
+  it('should allow to set tag property value', function () {
+
+    const inp = {
+      tagName: 'input',
+      attrs: [{name: 'prop-checked', value: 'checked'}, {name: 'type', value: 'checkbox'}],
+      isSvg: false,
+      selfClosing: false
+    };
+    const expected = {
+      yagniDom: ['h'],
+      line: 'h("input", {"type": "checkbox"}, {"checked": "checked"}, [])'
+    };
+
+    expect(yp.transformStartTag(inp)).to.deep.equal(expected);
+
+  });
+
+  it('should allow to set tag property value by reference', function () {
+
+    const inp = {
+      tagName: 'input',
+      attrs: [
+        {name: '@prop-checked', value: 'true'},
+        {name: '@prop-onclick', value: 'ctx.onclick'},
+        {name: 'type', value: 'checkbox'}
+      ],
+      isSvg: false,
+      selfClosing: false
+    };
+    const expected = {
+      yagniDom: ['h'],
+      line: 'h("input", {"type": "checkbox"}, {"checked": true, "onclick": ctx.onclick}, [])'
     };
 
     expect(yp.transformStartTag(inp)).to.deep.equal(expected);
@@ -65,7 +103,7 @@ describe('transformStartTag()', function () {
       selfClosing: false
     };
     const expected = {
-      yagniDom: 'hSVG',
+      yagniDom: ['hSVG'],
       line: 'hSVG("line", {"x1": "5", "y1": "5", "x2": "10", "y2": "12"}, {}, ['
     };
 

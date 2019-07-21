@@ -1,6 +1,6 @@
 
 const expect = require('chai').expect;
-const yp = require('..');
+const yp = require('../src/text.js');
 
 
 describe('hasVars()', function () {
@@ -65,6 +65,27 @@ describe('smartText()', function () {
   it('should return quoted text if text has no new line and no variables', function () {
 
     expect(yp.smartText('foo baz bar')).to.equal('"foo baz bar"');
+
+  });
+
+});
+
+
+describe('transformText()', function () {
+
+  it('should return an object with proper keys', function () {
+
+    const spec = yp.transformText({chars: 'foo baz bar'});
+
+    expect(spec).to.deep.equal({line: 'hText("foo baz bar")', yagniDom: ['hText']});
+
+  });
+
+  it('should return proper result for source object without chars property', function () {
+
+    const spec = yp.transformText('foo baz bar');
+
+    expect(spec).to.deep.equal({line: 'hText("")', yagniDom: ['hText']});
 
   });
 
